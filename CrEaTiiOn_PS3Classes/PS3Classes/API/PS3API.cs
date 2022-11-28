@@ -297,7 +297,7 @@ namespace PS3Lib
             }
             if (PS3API.SetAPI.API == SelectAPI.PS3Manager)
             {
-                PS3API.Common.Ps3mApi.Notify(msg);
+                PS3API.Common.Ps3mApi.Notify(msg, PS3MAPI.PS3_CMD.NotifyIcon.Caution, PS3MAPI.PS3_CMD.NotifySound.Cancel);
             }
         }
 
