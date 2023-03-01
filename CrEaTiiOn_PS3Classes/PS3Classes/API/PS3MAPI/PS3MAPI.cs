@@ -1,5 +1,6 @@
 ﻿using PS3Lib;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -366,12 +367,12 @@ namespace PS3ManagerAPI
         }
 
         // Token: 0x060000F7 RID: 247 RVA: 0x0000514C File Offset: 0x0000334C
-        public bool Notify(string message)
+        public bool Notify(string message, PS3MAPI.PS3_CMD.NotifyIcon icon, PS3MAPI.PS3_CMD.NotifySound sound)
         {
             bool result;
             try
             {
-                this.PS3.Notify(message);
+                this.PS3.Notify(message, icon, sound);
                 result = true;
             }
             catch (Exception ex)
@@ -707,12 +708,12 @@ namespace PS3ManagerAPI
             }
 
             // Token: 0x06000025 RID: 37 RVA: 0x00003088 File Offset: 0x00001288
-            public void Notify(string msg)
-            {
+            public void Notify(string msg, PS3MAPI.PS3_CMD.NotifyIcon icon, PS3MAPI.PS3_CMD.NotifySound sound)
+			{
                 try
                 {
-                    PS3MAPI.PS3MAPI_Client_Server.PS3_Notify(msg);
-                }
+                    PS3MAPI.PS3MAPI_Client_Server.PS3_Notify(msg, Convert.ToInt32(icon), Convert.ToInt32(sound));
+				}
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message, ex);
@@ -1001,7 +1002,76 @@ namespace PS3ManagerAPI
                 // Token: 0x04000031 RID: 49
                 Disabled
             }
-        }
+
+			public enum NotifyIcon
+			{
+				Info,
+				Friend,
+				Headset,
+				Caution,
+				Keypad,
+				MediaSever,
+				TemporaryIcon,
+				PsButtonInsensitive,
+				Settings,
+				TrophyBronze,
+				TrophySilver,
+				TrophyGold,
+				TrophyPlatium,
+				PointerHand,
+				PointerPen,
+				PointerArrow,
+				PointerGrab,
+				ArrowRight,
+				PsnBig,
+				PsPlus,
+				SigningIn,
+				NewWs,
+				CheckWs,
+				UrgentWs,
+				Cam,
+				Profile,
+				PsStore,
+				Album,
+				Players,
+				NewRoom,
+				Music,
+				Photo,
+				Video,
+				Game,
+				Lock,
+				IndiSignOut,
+				IndiMessage,
+				MessageSent,
+				CardButton,
+				LoadingIcon,
+				AvatarDefault,
+				DiscPs3,
+				DiscCd,
+				DiscPs2,
+				DiscPs1,
+				DiscDD,
+				DiscDvd,
+				DiscUnknown,
+				PspIcon,
+				AfkIcon,
+				GeGame
+			}
+
+			public enum NotifySound
+			{
+				Cancel,
+				Beep1,
+				Beep2,
+				Beep3,
+				Cursor,
+				Trophy,
+				Decide,
+				Option,
+				SystemOk,
+				SystemNg
+			}
+		}
 
         // Token: 0x0200000E RID: 14
         public class PROCESS_CMD
@@ -1575,14 +1645,14 @@ namespace PS3ManagerAPI
             }
 
             // Token: 0x06000060 RID: 96 RVA: 0x00003C00 File Offset: 0x00001E00
-            internal static void PS3_Notify(string msg)
-            {
+            internal static void PS3_Notify(string msg, int icon, int sound)
+			{
                 if (!PS3MAPI.PS3MAPI_Client_Server.IsConnected)
                 {
                     throw new Exception("PS3MAPI not connected!");
                 }
-                PS3MAPI.PS3MAPI_Client_Server.SendCommand("PS3 NOTIFY " + msg);
-                PS3MAPI.PS3MAPI_Client_Server.PS3MAPI_ResponseCode ps3MAPI_ResponseCode = PS3MAPI.PS3MAPI_Client_Server.eResponseCode;
+				PS3MAPI.PS3MAPI_Client_Server.SendCommand("PS3 NOTIFY " + msg + "&icon=" + icon.ToString() + "&snd=" + sound.ToString());
+				PS3MAPI.PS3MAPI_Client_Server.PS3MAPI_ResponseCode ps3MAPI_ResponseCode = PS3MAPI.PS3MAPI_Client_Server.eResponseCode;
                 if (ps3MAPI_ResponseCode != PS3MAPI.PS3MAPI_Client_Server.PS3MAPI_ResponseCode.CommandOK && ps3MAPI_ResponseCode != PS3MAPI.PS3MAPI_Client_Server.PS3MAPI_ResponseCode.RequestSuccessful)
                 {
                     PS3MAPI.PS3MAPI_Client_Server.Fail();
